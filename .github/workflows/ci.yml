@@ -25,7 +25,7 @@ env:
 jobs:
   job_spec:
     name: Decide which jobs to run
-    if: github.repository_owner == 'zed-industries'
+
     outputs:
       run_tests: ${{ steps.filter.outputs.run_tests }}
       run_license: ${{ steps.filter.outputs.run_license }}
@@ -68,12 +68,10 @@ jobs:
     name: Check Postgres and Protobuf migrations, mergability
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     timeout-minutes: 60
-    runs-on:
-      - self-hosted
-      - macOS
+    runs-on: macos-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -115,7 +113,7 @@ jobs:
     name: Check workspace-hack crate
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     runs-on:
       - buildjet-8vcpu-ubuntu-2204
@@ -147,7 +145,7 @@ jobs:
     timeout-minutes: 60
     name: Check formatting and spelling
     needs: [job_spec]
-    if: github.repository_owner == 'zed-industries'
+
     runs-on:
       - buildjet-8vcpu-ubuntu-2204
     steps:
@@ -198,7 +196,7 @@ jobs:
     timeout-minutes: 60
     name: Check docs
     needs: [job_spec]
-    if: github.repository_owner == 'zed-industries'
+
     runs-on:
       - buildjet-8vcpu-ubuntu-2204
     steps:
@@ -220,11 +218,9 @@ jobs:
     name: (macOS) Run Clippy and tests
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
-    runs-on:
-      - self-hosted
-      - macOS
+    runs-on: macos-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -287,7 +283,7 @@ jobs:
     name: (Linux) Run Clippy and tests
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     runs-on:
       - buildjet-16vcpu-ubuntu-2204
@@ -339,7 +335,7 @@ jobs:
     name: (Linux) Build Remote Server
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     runs-on:
       - buildjet-8vcpu-ubuntu-2204
@@ -378,7 +374,7 @@ jobs:
     name: (Windows) Run Clippy
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     runs-on: windows-2025-16
     steps:
@@ -436,7 +432,7 @@ jobs:
     name: (Windows) Run Tests
     needs: [job_spec]
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       needs.job_spec.outputs.run_tests == 'true'
     # Use bigger runners for PRs (speed); smaller for async (cost)
     runs-on: ${{ github.event_name == 'pull_request' && 'windows-2025-32' || 'windows-2025-16' }}
@@ -507,7 +503,7 @@ jobs:
       - windows_clippy
       - windows_tests
     if: |
-      github.repository_owner == 'zed-industries' &&
+
       always()
     steps:
       - name: Check all tests passed
@@ -800,7 +796,7 @@ jobs:
   nix-build:
     name: Build with Nix
     uses: ./.github/workflows/nix.yml
-    if: github.repository_owner == 'zed-industries' && contains(github.event.pull_request.labels.*.name, 'run-nix')
+      && contains(github.event.pull_request.labels.*.name, 'run-nix')
     with:
       flake-output: debug
       # excludes the final package to only cache dependencies

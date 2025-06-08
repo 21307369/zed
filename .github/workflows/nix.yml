@@ -25,7 +25,7 @@ jobs:
           - os: arm Mac
             runner: [macOS, ARM64, test]
             install_nix: false
-    if: github.repository_owner == 'zed-industries'
+
     runs-on: ${{ matrix.system.runner }}
     env:
       ZED_CLIENT_CHECKSUM_SEED: ${{ secrets.ZED_CLIENT_CHECKSUM_SEED }}
@@ -56,7 +56,7 @@ jobs:
           name: zed
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           pushFilter: "${{ inputs.cachix-filter }}"
-          cachixArgs: '-v'
+          cachixArgs: "-v"
 
       - run: nix build .#${{ inputs.flake-output }} -L --accept-flake-config
 

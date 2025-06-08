@@ -794,8 +794,8 @@ jobs:
 
   nix-build:
     name: Build with Nix
+    if: contains(github.event.pull_request.labels.*.name, 'run-nix')
     uses: ./.github/workflows/nix.yml
-      && contains(github.event.pull_request.labels.*.name, 'run-nix')
     with:
       flake-output: debug
       # excludes the final package to only cache dependencies
